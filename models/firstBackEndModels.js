@@ -1,3 +1,5 @@
+//Models interact directly with the database
+
 const db = require("../db/connection");
 
 function getCurrentTopics() {
