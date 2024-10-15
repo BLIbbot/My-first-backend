@@ -1,6 +1,9 @@
 //Controllers direct the data flow i.e. sending data from a client request to be queiried by a model, returning requested data to the client after a query completes or passing the request over to an error handler if there is a problem with the request
 
-const { getCurrentTopics } = require("../models/firstBackEndModels");
+const {
+  getCurrentTopics,
+  getSpecificArticle,
+} = require("../models/firstBackEndModels");
 //const fs = require("fs/promises");
 const APIList = require("../endpoints.json");
 
@@ -26,4 +29,15 @@ function getAPIS(req, res) {
   res.status(200).send({ APIList });
 }
 
-module.exports = { getTopics, getAPIS };
+function getArticle(req, res, next) {
+  const { article_id } = req.params;
+  getSpecificArticle(article_id)
+    .then((article) => {
+      res.status(200).send({ article });
+    })
+    .catch((err) => {
+      next(err);
+    });
+}
+
+module.exports = { getTopics, getAPIS, getArticle };
