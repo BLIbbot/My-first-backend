@@ -84,3 +84,28 @@ describe("GET /api/articles/:article_id", () => {
       });
   });
 });
+
+describe("GET /api/articles", () => {
+  test("200 - returns a sorted array of objects containing all available articles ", () => {
+    return request(app)
+      .get("/api/articles")
+      .expect(200)
+      .then(({ body }) => {
+        const articles = body.articles;
+        console.log(articles);
+        expect(articles).toBeSortedBy("created_at", { descending: true });
+        expect(articles.length).toBe(13);
+        articles.forEach((article) => {
+          expect(typeof article.title).toBe("string");
+          expect(typeof article.topic).toBe("string");
+          expect(typeof article.author).toBe("string");
+          expect(typeof article.created_at).toBe("string");
+          expect(typeof article.article_img_url).toBe("string");
+          expect(typeof article.comments_count).toBe("string");
+          expect(typeof article.article_id).toBe("number");
+          expect(typeof article.votes).toBe("number");
+          expect(article.body).toBeUndefined();
+        });
+      });
+  });
+});
