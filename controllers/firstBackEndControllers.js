@@ -3,6 +3,7 @@
 const {
   getCurrentTopics,
   getSpecificArticle,
+  grabArticles,
 } = require("../models/firstBackEndModels");
 //const fs = require("fs/promises");
 const APIList = require("../endpoints.json");
@@ -40,4 +41,10 @@ function getArticle(req, res, next) {
     });
 }
 
-module.exports = { getTopics, getAPIS, getArticle };
+function getAllArticles(req, res, next) {
+  grabArticles().then((articles) => {
+    res.status(200).send({ articles });
+  });
+}
+
+module.exports = { getTopics, getAPIS, getArticle, getAllArticles };
