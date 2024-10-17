@@ -5,6 +5,7 @@ const {
   getAPIS,
   getArticle,
   getAllArticles,
+  getArticleComments,
 } = require("./controllers/firstBackEndControllers");
 
 app.get("/api/topics", getTopics);
@@ -14,6 +15,8 @@ app.get("/api", getAPIS);
 app.get("/api/articles/:article_id", getArticle);
 
 app.get("/api/articles", getAllArticles);
+
+app.get("/api/articles/:article_id/comments", getArticleComments);
 
 app.use((err, req, res, next) => {
   if (err.status) {

@@ -2,13 +2,13 @@
 
 const db = require("../db/connection");
 
-function getCurrentTopics() {
+const getCurrentTopics = () => {
   return db.query(`SELECT * FROM topics;`).then(({ rows }) => {
     return rows;
   });
-}
+};
 
-function getSpecificArticle(article_id) {
+const getSpecificArticle = (article_id) => {
   return db
     .query(
       `SELECT * FROM articles 
@@ -21,9 +21,9 @@ function getSpecificArticle(article_id) {
       }
       return rows;
     });
-}
+};
 
-function grabArticles() {
+const grabArticles = () => {
   return db
     .query(
       `SELECT articles.article_id, title, topic, articles.author, articles.created_at, articles.votes, article_img_url, COUNT(comments.article_id) AS comments_count FROM articles
@@ -34,6 +34,27 @@ function grabArticles() {
     .then(({ rows }) => {
       return rows;
     });
-}
+};
 
-module.exports = { getCurrentTopics, getSpecificArticle, grabArticles };
+const getComments = (article_id) => {
+  return db
+    .query(
+      `SELECT * FROM comments
+       WHERE article_id = $1
+       ORDER BY comments.created_at DESC;`,
+      [article_id]
+    )
+    .then(({ rows }) => {
+      if (rows.length === 0) {
+        return Promise.reject({ status: 404, msg: "page not found" });
+      }
+      return rows;
+    });
+};
+
+module.exports = {
+  getCurrentTopics,
+  getSpecificArticle,
+  grabArticles,
+  getComments,
+};
