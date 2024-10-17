@@ -5,6 +5,7 @@ const {
   getSpecificArticle,
   grabArticles,
   getComments,
+  postComment,
 } = require("../models/firstBackEndModels");
 //const fs = require("fs/promises");
 const APIList = require("../endpoints.json");
@@ -27,9 +28,9 @@ function getAPIS(req, res) {
     });
 } */
 
-function getAPIS(req, res) {
+const getAPIS = (req, res) => {
   res.status(200).send({ APIList });
-}
+};
 
 function getArticle(req, res, next) {
   const { article_id } = req.params;
@@ -59,10 +60,23 @@ function getArticleComments(req, res, next) {
     });
 }
 
+function postAComment(req, res, next) {
+  const comment = req.body;
+  const article_id = req.params;
+  postComment(comment, article_id)
+    .then((postedComment) => {
+      res.status(201).send({ postedComment });
+    })
+    .catch((err) => {
+      next(err);
+    });
+}
+
 module.exports = {
   getTopics,
   getAPIS,
   getArticle,
   getAllArticles,
   getArticleComments,
+  postAComment,
 };

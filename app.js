@@ -1,11 +1,13 @@
 const express = require("express");
 const app = express();
+app.use(express.json());
 const {
   getTopics,
   getAPIS,
   getArticle,
   getAllArticles,
   getArticleComments,
+  postAComment,
 } = require("./controllers/firstBackEndControllers");
 
 app.get("/api/topics", getTopics);
@@ -17,6 +19,8 @@ app.get("/api/articles/:article_id", getArticle);
 app.get("/api/articles", getAllArticles);
 
 app.get("/api/articles/:article_id/comments", getArticleComments);
+
+app.post("/api/articles/:article_id/comments", postAComment);
 
 app.use((err, req, res, next) => {
   if (err.status) {

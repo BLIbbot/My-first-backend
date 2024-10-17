@@ -52,9 +52,30 @@ const getComments = (article_id) => {
     });
 };
 
+const postComment = (comment, id) => {
+  const { body, author } = comment;
+  const article_id = id.article_id;
+  if (!author) {
+    return Promise.reject({ status: 404, msg: "User does not exist" });
+  }
+  if (!article_id) {
+    return Promise.reject({ status: 404, msg: "Invalid id" });
+  }
+
+  return db
+    .query(
+      `INSERT INTO comments (body, article_id, author) VALUES ($1, $2, $3) RETURNING *`,
+      [body, article_id, author]
+    )
+    .then((postedComment) => {
+      return postedComment.rows[0];
+    });
+};
+
 module.exports = {
   getCurrentTopics,
   getSpecificArticle,
   grabArticles,
   getComments,
+  postComment,
 };

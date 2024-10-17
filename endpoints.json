@@ -58,5 +58,21 @@
         }
       ]
     }
+  },
+  "POST /api/articles/:article_id/comments": {
+    "description": "posts a comment to an article using the article id and returns the posted comment with all autofilled data",
+    "queries": ["1", "3", "5", "6", "9"],
+    "exampleResponse": {
+      "comments": [
+        {
+          "comment_id": 19,
+          "body": "The owls are not what they seem.",
+          "article_id": 6,
+          "author": "icellusedkars",
+          "votes": 0,
+          "created_at": 1602433380000
+        }
+      ]
+    }
   }
 }
