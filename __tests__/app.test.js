@@ -147,3 +147,77 @@ describe("GET /api/articles/:article_id/comments", () => {
       });
   });
 });
+
+describe("POST /api/articles/:article_id/comments", () => {
+  test("201 - adds a comment to an article", () => {
+    return request(app)
+      .post("/api/articles/6/comments")
+      .send({
+        body: "The owls are not what they seem.",
+        author: "icellusedkars",
+      })
+      .expect(201)
+      .then(({ body }) => {
+        const newComment = body.postedComment;
+        expect(typeof newComment.comment_id).toBe("number");
+        expect(typeof newComment.body).toBe("string");
+        expect(typeof newComment.author).toBe("string");
+        expect(typeof newComment.created_at).toBe("string");
+        expect(typeof newComment.article_id).toBe("number");
+        expect(typeof newComment.votes).toBe("number");
+      });
+  });
+  test("201 - ignores extra attributes when adding a comment to an article", () => {
+    return request(app)
+      .post("/api/articles/6/comments")
+      .send({
+        body: "The owls are not what they seem.",
+        author: "icellusedkars",
+        extraAttribute: "plz ignore me",
+      })
+      .expect(201)
+      .then(({ body }) => {
+        const newComment = body.postedComment;
+        expect(typeof newComment.comment_id).toBe("number");
+        expect(typeof newComment.body).toBe("string");
+        expect(typeof newComment.author).toBe("string");
+        expect(typeof newComment.created_at).toBe("string");
+        expect(typeof newComment.article_id).toBe("number");
+        expect(typeof newComment.votes).toBe("number");
+      });
+  });
+  test("400 - when not passed all required attributes", () => {
+    return request(app)
+      .post("/api/articles/unexpectedInput/comments")
+      .send({
+        author: "icellusedkars",
+        extraAttribute: "plz ignore me",
+      })
+      .expect(400)
+      .then(({ body }) => {
+        const errMsg = body.msg;
+        expect(errMsg).toBe("Invalid request");
+      });
+  });
+  test("404 - when passed an invalid id", () => {
+    return request(app)
+      .post("/api/articles/404/comments")
+      .expect(404)
+      .then(({ body }) => {
+        const errMsg = body.msg;
+        expect(errMsg).toBe("User does not exist");
+      });
+  });
+  test("404 - when the author/username attribute doesnt exist", () => {
+    return request(app)
+      .post("/api/articles/6/comments")
+      .send({
+        body: "The owls are not what they seem.",
+      })
+      .expect(404)
+      .then(({ body }) => {
+        const errMsg = body.msg;
+        expect(errMsg).toBe("User does not exist");
+      });
+  });
+});
