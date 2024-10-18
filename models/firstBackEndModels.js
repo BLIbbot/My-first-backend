@@ -72,10 +72,22 @@ const postComment = (comment, id) => {
     });
 };
 
+const changeVoteCount = (voteCount, article_id) => {
+  return db
+    .query(
+      `UPDATE articles SET votes=votes+$1 WHERE article_id=$2 RETURNING *`,
+      [voteCount, article_id]
+    )
+    .then((updatedVoteCount) => {
+      return updatedVoteCount.rows[0];
+    });
+};
+
 module.exports = {
   getCurrentTopics,
   getSpecificArticle,
   grabArticles,
   getComments,
   postComment,
+  changeVoteCount,
 };
