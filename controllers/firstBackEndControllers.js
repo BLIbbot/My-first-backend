@@ -6,6 +6,7 @@ const {
   grabArticles,
   getComments,
   postComment,
+  changeVoteCount,
 } = require("../models/firstBackEndModels");
 //const fs = require("fs/promises");
 const APIList = require("../endpoints.json");
@@ -72,6 +73,18 @@ function postAComment(req, res, next) {
     });
 }
 
+function addVote(req, res, next) {
+  const voteCount = req.body.inc_votes;
+  const { article_id } = req.params;
+  changeVoteCount(voteCount, article_id)
+    .then((result) => {
+      res.status(200).send(result);
+    })
+    .catch((err) => {
+      next(err);
+    });
+}
+
 module.exports = {
   getTopics,
   getAPIS,
@@ -79,4 +92,5 @@ module.exports = {
   getAllArticles,
   getArticleComments,
   postAComment,
+  addVote,
 };

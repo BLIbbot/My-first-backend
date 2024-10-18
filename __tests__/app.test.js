@@ -221,3 +221,37 @@ describe("POST /api/articles/:article_id/comments", () => {
       });
   });
 });
+
+describe("PATCH /api/articles/:article_id", () => {
+  test("200 - successful patch the article was updated", () => {
+    return request(app)
+      .patch("/api/articles/1")
+      .send({ inc_votes: 1 })
+      .expect(200)
+      .then(({ body }) => {
+        const voteCount = body;
+        console.log(body);
+        expect(voteCount.votes).toBe(101);
+      });
+  });
+  test("400 - bad request, the body is empty", () => {
+    return request(app)
+      .patch("/api/articles/1")
+      .send({})
+      .expect(400)
+      .then(({ body }) => {
+        const errMsg = body.msg;
+        expect(errMsg).toBe("Invalid request");
+      });
+  });
+  test("400 - bad request, the body does not contain appropriate data", () => {
+    return request(app)
+      .patch("/api/articles/1")
+      .send({ inc_votes: "invalidField" })
+      .expect(400)
+      .then(({ body }) => {
+        const errMsg = body.msg;
+        expect(errMsg).toBe("Invalid request");
+      });
+  });
+});

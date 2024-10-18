@@ -1,6 +1,6 @@
 const express = require("express");
 const app = express();
-app.use(express.json());
+app.use(express.json()); //required for post
 const {
   getTopics,
   getAPIS,
@@ -8,6 +8,7 @@ const {
   getAllArticles,
   getArticleComments,
   postAComment,
+  addVote,
 } = require("./controllers/firstBackEndControllers");
 
 app.get("/api/topics", getTopics);
@@ -22,13 +23,15 @@ app.get("/api/articles/:article_id/comments", getArticleComments);
 
 app.post("/api/articles/:article_id/comments", postAComment);
 
+app.patch("/api/articles/:article_id", addVote);
+
 app.use((err, req, res, next) => {
   if (err.status) {
     res.status(err.status).send({ msg: err.msg });
   } else next(err);
 });
 app.use((err, req, res, next) => {
-  if (err.code === "22P02") {
+  if (err.code === "22P02" || err.code === "23502") {
     res.status(400).send({ msg: "Invalid request" });
   } else next(err);
 });
