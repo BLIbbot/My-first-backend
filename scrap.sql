@@ -1,3 +1,3 @@
 \c nc_news_test
 \d
-SELECT * FROM articles;
+SELECT comment_id FROM comments;

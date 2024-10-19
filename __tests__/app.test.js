@@ -255,3 +255,33 @@ describe("PATCH /api/articles/:article_id", () => {
       });
   });
 });
+
+describe("DELETE /api/comments/:comment_id", () => {
+  test("204 - comment was succesfully deleted", () => {
+    return request(app)
+      .delete("/api/comments/1")
+      .expect(204)
+      .then(({ body }) => {
+        const response = body;
+        expect(response).toMatchObject({});
+      });
+  });
+  test("400 - returns invalid request if the client request does not match the expected request conditions", () => {
+    return request(app)
+      .delete("/api/comments/unexpectedInput")
+      .expect(400)
+      .then(({ body }) => {
+        const errMsg = body.msg;
+        expect(errMsg).toBe("Invalid request");
+      });
+  });
+  test("404 - returns comment not found if the comment associated with the given id does not exist", () => {
+    return request(app)
+      .delete("/api/comments/404")
+      .expect(404)
+      .then(({ body }) => {
+        const errMsg = body.msg;
+        expect(errMsg).toBe("comment not found");
+      });
+  });
+});

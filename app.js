@@ -9,6 +9,7 @@ const {
   getArticleComments,
   postAComment,
   addVote,
+  deleteComment,
 } = require("./controllers/firstBackEndControllers");
 
 app.get("/api/topics", getTopics);
@@ -24,6 +25,8 @@ app.get("/api/articles/:article_id/comments", getArticleComments);
 app.post("/api/articles/:article_id/comments", postAComment);
 
 app.patch("/api/articles/:article_id", addVote);
+
+app.delete("/api/comments/:comment_id", deleteComment);
 
 app.use((err, req, res, next) => {
   if (err.status) {
