@@ -8,6 +8,7 @@ const {
   postComment,
   changeVoteCount,
   removeSelectedComment,
+  getAllUsers,
 } = require("../models/firstBackEndModels");
 //const fs = require("fs/promises");
 const APIList = require("../endpoints.json");
@@ -97,6 +98,12 @@ function deleteComment(req, res, next) {
     });
 }
 
+function getUsers(req, res, next) {
+  getAllUsers().then((users) => {
+    res.status(200).send(users);
+  });
+}
+
 module.exports = {
   getTopics,
   getAPIS,
@@ -106,4 +113,5 @@ module.exports = {
   postAComment,
   addVote,
   deleteComment,
+  getUsers,
 };
