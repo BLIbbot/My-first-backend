@@ -10,6 +10,7 @@ const {
   postAComment,
   addVote,
   deleteComment,
+  getUsers,
 } = require("./controllers/firstBackEndControllers");
 
 app.get("/api/topics", getTopics);
@@ -21,6 +22,8 @@ app.get("/api/articles/:article_id", getArticle);
 app.get("/api/articles", getAllArticles);
 
 app.get("/api/articles/:article_id/comments", getArticleComments);
+
+app.get("/api/users", getUsers);
 
 app.post("/api/articles/:article_id/comments", postAComment);
 

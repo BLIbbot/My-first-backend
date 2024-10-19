@@ -230,7 +230,6 @@ describe("PATCH /api/articles/:article_id", () => {
       .expect(200)
       .then(({ body }) => {
         const voteCount = body;
-        console.log(body);
         expect(voteCount.votes).toBe(101);
       });
   });
@@ -282,6 +281,34 @@ describe("DELETE /api/comments/:comment_id", () => {
       .then(({ body }) => {
         const errMsg = body.msg;
         expect(errMsg).toBe("comment not found");
+      });
+  });
+});
+
+describe("GET/api/users", () => {
+  test("200 - returns all related user data ", () => {
+    return request(app)
+      .get("/api/users")
+      .expect(200)
+      .then(({ body }) => {
+        const users = body;
+        expect(users[0].username).toContain("butter_bridge");
+        expect(users[0].name).toContain("jonny");
+        expect(users[0].avatar_url).toContain(
+          "https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg"
+        );
+        expect(users[0]).toMatchObject({
+          username: "butter_bridge",
+          name: "jonny",
+          avatar_url:
+            "https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg",
+        });
+        expect(users.length).toBe(4);
+        users.forEach((user) => {
+          expect(typeof user.username).toBe("string");
+          expect(typeof user.name).toBe("string");
+          expect(typeof user.avatar_url).toBe("string");
+        });
       });
   });
 });

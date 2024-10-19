@@ -117,6 +117,12 @@ const removeSelectedComment = (comment_id) => {
     });
 };
 
+const getAllUsers = () => {
+  return db.query(`SELECT * FROM users;`).then(({ rows }) => {
+    return rows;
+  });
+};
+
 module.exports = {
   getCurrentTopics,
   getSpecificArticle,
@@ -125,4 +131,5 @@ module.exports = {
   postComment,
   changeVoteCount,
   removeSelectedComment,
+  getAllUsers,
 };
