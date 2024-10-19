@@ -7,6 +7,7 @@ const {
   getComments,
   postComment,
   changeVoteCount,
+  removeSelectedComment,
 } = require("../models/firstBackEndModels");
 //const fs = require("fs/promises");
 const APIList = require("../endpoints.json");
@@ -85,6 +86,17 @@ function addVote(req, res, next) {
     });
 }
 
+function deleteComment(req, res, next) {
+  const { comment_id } = req.params;
+  removeSelectedComment(comment_id)
+    .then((deletedComment) => {
+      res.status(204).send({});
+    })
+    .catch((err) => {
+      next(err);
+    });
+}
+
 module.exports = {
   getTopics,
   getAPIS,
@@ -93,4 +105,5 @@ module.exports = {
   getArticleComments,
   postAComment,
   addVote,
+  deleteComment,
 };
