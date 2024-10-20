@@ -85,6 +85,19 @@ describe("GET /api/articles/:article_id", () => {
   });
 });
 
+describe("GET /api/articles/:article_id (comment_count)", () => {
+  test("200 - should return an article by artilce_id with comment_count, which is the total count of all the comments with this article_id.", () => {
+    return request(app)
+      .get("/api/articles/1")
+      .expect(200)
+      .then(({ body }) => {
+        const articleObj = body.article;
+        expect(articleObj[0].article_id).toBe(1);
+        expect(articleObj[0].comment_count).toBe("11");
+      });
+  });
+});
+
 describe("GET /api/articles", () => {
   test("200 - returns a sorted array of objects containing all available articles ", () => {
     return request(app)
