@@ -11,7 +11,9 @@ const {
   addVote,
   deleteComment,
   getUsers,
+  getArticles,
 } = require("./controllers/firstBackEndControllers");
+const { getSortedArticles } = require("./models/firstBackEndModels");
 
 app.get("/api/topics", getTopics);
 

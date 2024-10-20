@@ -10,8 +10,20 @@
     }
   },
   "GET /api/articles": {
-    "description": "serves an array of all articles",
-    "queries": ["author", "topic", "sort_by", "order"],
+    "description": "serves an array of all articles, sorted by input queries",
+    "queries": {
+      "sort_by": [
+        "title",
+        "topic",
+        "author",
+        "created_at",
+        "article_img_url",
+        "comments_count",
+        "article_id",
+        "votes"
+      ],
+      "order": ["ASC", "DESC"]
+    },
     "exampleResponse": {
       "articles": [
         {
