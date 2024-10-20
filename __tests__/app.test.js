@@ -146,6 +146,28 @@ describe("GET /api/articles (sorting queries)", () => {
   });
 });
 
+describe("GET /api/articles (topic query)", () => {
+  test("200 - gets all articles sorted by topic", () => {
+    return request(app)
+      .get("/api/articles?sort_by=topic&order=ASC")
+      .expect(200)
+      .then(({ body }) => {
+        const articles = body.articles;
+        expect(articles).toHaveLength(13);
+        expect(articles).toBeSortedBy("topic");
+      });
+  });
+  test('200 - returns all articles if "topic" is ommited from the query', () => {
+    return request(app)
+      .get("/api/articles")
+      .expect(200)
+      .then(({ body }) => {
+        const articles = body.articles;
+        expect(articles.length).toBe(13);
+      });
+  });
+});
+
 describe("GET /api/articles/:article_id/comments", () => {
   test("200 - should return all of the comments with the given article_id", () => {
     return request(app)
