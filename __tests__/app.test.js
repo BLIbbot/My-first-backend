@@ -109,6 +109,43 @@ describe("GET /api/articles", () => {
   });
 });
 
+describe("GET /api/articles (sorting queries)", () => {
+  test("200 - gets all articles defaults to sorted by created_at date, decending order", () => {
+    return request(app)
+      .get("/api/articles")
+      .expect(200)
+      .then(({ body }) => {
+        const articles = body.articles;
+        expect(articles).toHaveLength(13);
+        expect(articles).toBeSortedBy("created_at", { descending: true });
+        expect(articles[0]).toHaveProperty("title");
+      });
+  });
+  test("200 - gets all articles sorted by votes, ascending order", () => {
+    return (
+      request(app)
+        .get("/api/articles?sort_by=votes&order=ASC")
+        //.query({ sort_by: "votes", order: "ASC" })
+        .expect(200)
+        .then(({ body }) => {
+          const articles = body.articles;
+          expect(articles).toHaveLength(13);
+          expect(articles).toBeSortedBy("votes", { acsending: true });
+          expect(articles[0]).toHaveProperty("votes");
+        })
+    );
+  });
+  test("400 - Invalid input if query values are not greenlisted", () => {
+    return request(app)
+      .get("/api/articles?sort_by=Bad&order=Request")
+      .expect(400)
+      .then(({ body }) => {
+        const errMsg = body.msg;
+        expect(errMsg).toBe("Invalid input");
+      });
+  });
+});
+
 describe("GET /api/articles/:article_id/comments", () => {
   test("200 - should return all of the comments with the given article_id", () => {
     return request(app)
@@ -285,7 +322,7 @@ describe("DELETE /api/comments/:comment_id", () => {
   });
 });
 
-describe("GET/api/users", () => {
+describe("GET /api/users", () => {
   test("200 - returns all related user data ", () => {
     return request(app)
       .get("/api/users")

@@ -46,10 +46,16 @@ function getArticle(req, res, next) {
     });
 }
 
-function getAllArticles(req, res) {
-  grabArticles().then((articles) => {
-    res.status(200).send({ articles });
-  });
+function getAllArticles(req, res, next) {
+  const sort_by = req.query.sort_by;
+  const order = req.query.order;
+  grabArticles(sort_by, order)
+    .then((articles) => {
+      res.status(200).send({ articles });
+    })
+    .catch((err) => {
+      next(err);
+    });
 }
 
 function getArticleComments(req, res, next) {
@@ -98,7 +104,7 @@ function deleteComment(req, res, next) {
     });
 }
 
-function getUsers(req, res, next) {
+function getUsers(req, res) {
   getAllUsers().then((users) => {
     res.status(200).send(users);
   });

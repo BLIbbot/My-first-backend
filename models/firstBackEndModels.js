@@ -23,13 +23,29 @@ const getSpecificArticle = (article_id) => {
     });
 };
 
-const grabArticles = () => {
+const grabArticles = (sort_by = "created_at", order = "DESC") => {
+  order = order.toUpperCase();
+  const allowedInputs = [
+    "title",
+    "topic",
+    "author",
+    "created_at",
+    "article_img_url",
+    "comments_count",
+    "article_id",
+    "votes",
+    "ASC",
+    "DESC",
+  ];
+  if (!allowedInputs.includes(sort_by, order)) {
+    return Promise.reject({ status: 400, msg: "Invalid input" });
+  }
   return db
     .query(
       `SELECT articles.article_id, title, topic, articles.author, articles.created_at, articles.votes, article_img_url, COUNT(comments.article_id) AS comments_count FROM articles
        LEFT JOIN comments ON articles.article_id = comments.article_id
        GROUP BY articles.article_id
-       ORDER BY articles.created_at DESC;`
+       ORDER BY articles.${sort_by} ${order};`
     )
     .then(({ rows }) => {
       return rows;
