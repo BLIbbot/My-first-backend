@@ -1,5 +1,5 @@
 const app = require("./app.js");
-const { PORT = 9090 } = process.env || 8080;
+const PORT = process.env.PORT || 3000;
 
 console.log(app);
 
