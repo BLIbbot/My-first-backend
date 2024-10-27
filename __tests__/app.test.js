@@ -385,7 +385,7 @@ describe("GET /api/users", () => {
   });
 });
 
-describe.only("GET /api/users/:username", () => {
+describe("GET /api/users/:username", () => {
   test("200 - returns an object with the associated username, avatar_URL, and name", () => {
     return request(app)
       .get("/api/users/icellusedkars")
