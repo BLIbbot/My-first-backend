@@ -1,37 +1,10 @@
 const express = require("express");
 const app = express();
+
+const apiRouter = require("./router/api.router");
+app.use("/api", apiRouter);
+
 app.use(express.json()); //required for post
-const {
-  getTopics,
-  getAPIS,
-  getArticle,
-  getAllArticles,
-  getArticleComments,
-  postAComment,
-  addVote,
-  deleteComment,
-  getUsers,
-  getArticles,
-} = require("./controllers/firstBackEndControllers");
-const { getSortedArticles } = require("./models/firstBackEndModels");
-
-app.get("/api/topics", getTopics);
-
-app.get("/api", getAPIS);
-
-app.get("/api/articles/:article_id", getArticle);
-
-app.get("/api/articles", getAllArticles);
-
-app.get("/api/articles/:article_id/comments", getArticleComments);
-
-app.get("/api/users", getUsers);
-
-app.post("/api/articles/:article_id/comments", postAComment);
-
-app.patch("/api/articles/:article_id", addVote);
-
-app.delete("/api/comments/:comment_id", deleteComment);
 
 app.use((err, req, res, next) => {
   if (err.status) {
