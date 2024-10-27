@@ -102,36 +102,12 @@ const changeVoteCount = (voteCount, article_id) => {
 };
 
 const removeSelectedComment = (comment_id) => {
-  const idList = [];
   return db
-    .query(`SELECT comment_id FROM comments;`)
-    .then((ids) => {
-      ids.rows.forEach((id) => {
-        idList.push(id.comment_id);
-      });
-    })
-    .then(() => {
-      if (isNaN(Number(comment_id))) {
-        return Promise.reject({ status: 400, msg: "Invalid request" });
-      } else {
-        const correctId = [];
-        idList.forEach((id) => {
-          if (Number(comment_id) === id) {
-            correctId.push(1);
-          }
-        });
-        if (correctId.length === 0) {
-          return Promise.reject({ status: 404, msg: "comment not found" });
-        }
+    .query(`DELETE FROM comments WHERE comment_id=$1 RETURNING *`, [comment_id])
+    .then(({ rows }) => {
+      if (rows.length === 0) {
+        return Promise.reject({ status: 404, msg: "comment not found" });
       }
-    })
-    .then(() => {
-      return db.query(`DELETE FROM comments WHERE comment_id=$1 RETURNING *`, [
-        comment_id,
-      ]);
-    })
-    .then((deletedComment) => {
-      return deletedComment.rows[0];
     });
 };
 
@@ -139,6 +115,21 @@ const getAllUsers = () => {
   return db.query(`SELECT * FROM users;`).then(({ rows }) => {
     return rows;
   });
+};
+
+const fetchUser = (username) => {
+  return db
+    .query(
+      `SELECT * FROM users
+  WHERE users.username=$1;`,
+      [username]
+    )
+    .then(({ rows }) => {
+      if (rows.length === 0) {
+        return Promise.reject({ status: 404, msg: "User does not exist" });
+      }
+      return rows[0];
+    });
 };
 
 module.exports = {
@@ -150,4 +141,5 @@ module.exports = {
   changeVoteCount,
   removeSelectedComment,
   getAllUsers,
+  fetchUser,
 };

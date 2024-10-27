@@ -384,3 +384,28 @@ describe("GET /api/users", () => {
       });
   });
 });
+
+describe.only("GET /api/users/:username", () => {
+  test("200 - returns an object with the associated username, avatar_URL, and name", () => {
+    return request(app)
+      .get("/api/users/icellusedkars")
+      .expect(200)
+      .then(({ body: { user } }) => {
+        expect(typeof user.name).toBe("string");
+        expect(user).toMatchObject({
+          username: "icellusedkars",
+          name: "sam",
+          avatar_url:
+            "https://avatars2.githubusercontent.com/u/24604688?s=460&v=4",
+        });
+      });
+  });
+  test("404 - Username can not be found if the username doesnt exist in the database", () => {
+    return request(app)
+      .get("/api/users/notrealusername")
+      .expect(404)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("User does not exist");
+      });
+  });
+});

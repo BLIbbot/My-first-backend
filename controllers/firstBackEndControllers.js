@@ -9,6 +9,7 @@ const {
   changeVoteCount,
   removeSelectedComment,
   getAllUsers,
+  fetchUser,
 } = require("../models/firstBackEndModels");
 //const fs = require("fs/promises");
 const APIList = require("../endpoints.json");
@@ -110,6 +111,17 @@ function getUsers(req, res) {
   });
 }
 
+function getUserByUsername(req, res, next) {
+  const { username } = req.params;
+  fetchUser(username)
+    .then((user) => {
+      res.status(200).send({ user });
+    })
+    .catch((err) => {
+      next(err);
+    });
+}
+
 module.exports = {
   getTopics,
   getAPIS,
@@ -120,4 +132,5 @@ module.exports = {
   addVote,
   deleteComment,
   getUsers,
+  getUserByUsername,
 };
