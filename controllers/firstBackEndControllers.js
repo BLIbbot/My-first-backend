@@ -85,8 +85,8 @@ function addVote(req, res, next) {
   const voteCount = req.body.inc_votes;
   const { article_id } = req.params;
   changeVoteCount(voteCount, article_id)
-    .then((result) => {
-      res.status(200).send(result);
+    .then((article) => {
+      res.status(200).send(article);
     })
     .catch((err) => {
       next(err);

@@ -1,3 +1,4 @@
+const articlesRouter = require("express").Router();
 const {
   getArticle,
   getAllArticles,
@@ -5,16 +6,18 @@ const {
   postAComment,
   addVote,
 } = require("../controllers/firstBackEndControllers");
-const { getSortedArticles } = require("./models/firstBackEndModels");
 
-app.get("/api/articles/:article_id", getArticle);
+const { getSortedArticles } = require("../models/firstBackEndModels");
 
-app.get("/api/articles", getAllArticles);
+articlesRouter.get("/:article_id", getArticle);
 
-app.get("/api/articles/:article_id/comments", getArticleComments);
+articlesRouter.get("/", getAllArticles);
 
-app.post("/api/articles/:article_id/comments", postAComment);
+articlesRouter
+  .route("/:article_id/comments")
+  .get(getArticleComments)
+  .post(postAComment);
 
-app.patch("/api/articles/:article_id", addVote);
+articlesRouter.patch("/:article_id", addVote);
 
 module.exports = articlesRouter;

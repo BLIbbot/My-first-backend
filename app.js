@@ -1,10 +1,9 @@
 const express = require("express");
 const app = express();
+app.use(express.json()); //required for post
 
 const apiRouter = require("./router/api.router");
 app.use("/api", apiRouter);
-
-app.use(express.json()); //required for post
 
 app.use((err, req, res, next) => {
   if (err.status) {

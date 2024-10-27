@@ -1,5 +1,6 @@
+const usersRouter = require("express").Router();
 const { getUsers } = require("../controllers/firstBackEndControllers");
 
-app.get("/api/users", getUsers);
+usersRouter.get("/", getUsers);
 
 module.exports = usersRouter;

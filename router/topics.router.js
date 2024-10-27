@@ -1,5 +1,6 @@
+const topicsRouter = require("express").Router();
 const { getTopics } = require("../controllers/firstBackEndControllers");
 
-app.get("/api/topics", getTopics);
+topicsRouter.get("/", getTopics);
 
 module.exports = topicsRouter;
