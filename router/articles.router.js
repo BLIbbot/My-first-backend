@@ -5,13 +5,14 @@ const {
   getArticleComments,
   postAComment,
   addVote,
+  postAnArticle,
 } = require("../controllers/firstBackEndControllers");
 
 const { getSortedArticles } = require("../models/firstBackEndModels");
 
 articlesRouter.route("/:article_id").get(getArticle).patch(addVote);
 
-articlesRouter.get("/", getAllArticles);
+articlesRouter.route("/").get(getAllArticles).post(postAnArticle);
 
 articlesRouter
   .route("/:article_id/comments")

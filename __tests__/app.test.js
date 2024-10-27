@@ -181,6 +181,113 @@ describe("GET /api/articles (topic query)", () => {
   });
 });
 
+describe("POST /api/articles", () => {
+  test("201 - Posts article and returns an object containing all relevant article data", () => {
+    return request(app)
+      .post("/api/articles")
+      .send({
+        title: "A testarticle",
+        topic: "testarticles",
+        author: "Benjamin",
+        body: "This is my testarticle",
+        article_img_url:
+          "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+      })
+      .expect(201)
+      .then(({ body: { article } }) => {
+        expect(article).toHaveProperty(
+          "author",
+          "title",
+          "body",
+          "topic",
+          "article_img_url",
+          "article_id",
+          "votes",
+          "comment_count",
+          "created_at"
+        );
+      });
+  });
+  test("201 - Posts article and returns an object containing all relevant article data (article_img_url defaults when not included)", () => {
+    return request(app)
+      .post("/api/articles")
+      .send({
+        title: "A testarticle",
+        topic: "testarticles",
+        author: "Benjamin",
+        body: "This is my testarticle",
+      })
+      .expect(201)
+      .then(({ body: { article } }) => {
+        expect(article.article_img_url).toBe(
+          "https://images.pexels.com/photos/97050/pexels-photo-97050.jpeg?w=700&h=700"
+        );
+      });
+  });
+  test("201 - ignores unexpected attributes when posting an article", () => {
+    return request(app)
+      .post("/api/articles")
+      .send({
+        title: "A testarticle",
+        topic: "testarticles",
+        author: "Benjamin",
+        body: "This is my testarticle",
+        article_img_url:
+          "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+        extraAttribute: "plz ignore me",
+      })
+      .expect(201)
+      .then(({ body: { article } }) => {
+        expect(article).not.toHaveProperty("extraAttribute");
+      });
+  });
+  test("400 - invalid request when not passed valid topic", () => {
+    return request(app)
+      .post("/api/articles/unexpectedInput/comments")
+      .send({
+        topic: "invalidtopic",
+        author: "Benjamin",
+        body: "This is my testarticle",
+        extraAttribute: "plz ignore me",
+      })
+      .expect(400)
+      .then(({ body }) => {
+        const errMsg = body.msg;
+        expect(errMsg).toBe("Invalid request");
+      });
+  });
+  test("400 - invalid request when not passed valid author", () => {
+    return request(app)
+      .post("/api/articles/unexpectedInput/comments")
+      .send({
+        topic: "testarticles",
+        author: "invalidauthor",
+        body: "This is my testarticle",
+        extraAttribute: "plz ignore me",
+      })
+      .expect(400)
+      .then(({ body }) => {
+        const errMsg = body.msg;
+        expect(errMsg).toBe("Invalid request");
+      });
+  });
+  test("400 - when not passed all required attributes", () => {
+    return request(app)
+      .post("/api/articles/unexpectedInput/comments")
+      .send({
+        topic: "testarticles",
+        author: "Benjamin",
+        body: "This is my testarticle",
+        extraAttribute: "plz ignore me",
+      })
+      .expect(400)
+      .then(({ body }) => {
+        const errMsg = body.msg;
+        expect(errMsg).toBe("Invalid request");
+      });
+  });
+});
+
 describe("GET /api/articles/:article_id/comments", () => {
   test("200 - should return all of the comments with the given article_id", () => {
     return request(app)

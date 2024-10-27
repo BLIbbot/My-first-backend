@@ -143,6 +143,28 @@ const changeCommentVoteCount = (voteCount, comment_id) => {
     });
 };
 
+const postArticle = (articleToPost) => {
+  const { title, topic, author, body, article_img_url } = articleToPost;
+  const articleProperties = [title, topic, author, body];
+  let queryStr = `INSERT INTO articles (title, topic, author, body `;
+  if (article_img_url) {
+    articleProperties.push(article_img_url);
+    queryStr += ", article_img_url)";
+  } else {
+    queryStr += ")";
+  }
+  queryStr += ` VALUES ($1, $2, $3, $4 `;
+  if (article_img_url) {
+    queryStr += " , $5)";
+  } else {
+    queryStr += ")";
+  }
+  queryStr += " RETURNING *;";
+  return db.query(queryStr, articleProperties).then(({ rows }) => {
+    return rows[0];
+  });
+};
+
 module.exports = {
   getCurrentTopics,
   getSpecificArticle,
@@ -154,4 +176,5 @@ module.exports = {
   getAllUsers,
   fetchUser,
   changeCommentVoteCount,
+  postArticle,
 };
