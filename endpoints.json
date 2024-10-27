@@ -117,5 +117,18 @@
         }
       ]
     }
+  },
+  "GET /api/users/:username": {
+    "description": "serves an array with a single object containing all user data connected to the input username",
+    "params": "icellusedkars",
+    "exampleResponse": {
+      "articles": [
+        {
+          "username": "icellusedkars",
+          "name": "sam",
+          "avatar_url": "https://avatars2.githubusercontent.com/u/24604688?s=460&v=4"
+        }
+      ]
+    }
   }
 }
