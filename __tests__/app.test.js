@@ -409,3 +409,53 @@ describe("GET /api/users/:username", () => {
       });
   });
 });
+
+describe("PATCH /api/comments/:comment_id", () => {
+  test("200 - Succesful patch the comment vote count was updated by 1", () => {
+    return request(app)
+      .patch("/api/comments/1")
+      .send({ inc_votes: 1 })
+      .expect(200)
+      .then(({ body: { comment } }) => {
+        expect(comment.votes).toBe(17);
+        expect(comment.author).toBe("butter_bridge");
+      });
+  });
+  test("200 - Succesful patch the comment vote count was updated by -1", () => {
+    return request(app)
+      .patch("/api/comments/1")
+      .send({ inc_votes: -1 })
+      .expect(200)
+      .then(({ body: { comment } }) => {
+        expect(comment.votes).toBe(15);
+        expect(comment).toHaveProperty(
+          "comment_id",
+          "body",
+          "article_id",
+          "author",
+          "votes",
+          "created_at"
+        );
+      });
+  });
+  test("400 - bad request, the body is empty", () => {
+    return request(app)
+      .patch("/api/comments/1")
+      .send({})
+      .expect(400)
+      .then(({ body }) => {
+        const errMsg = body.msg;
+        expect(errMsg).toBe("Invalid request");
+      });
+  });
+  test("400 - bad request, the body does not contain appropriate data", () => {
+    return request(app)
+      .patch("/api/comments/1")
+      .send({ inc_votes: "invalidField" })
+      .expect(400)
+      .then(({ body }) => {
+        const errMsg = body.msg;
+        expect(errMsg).toBe("Invalid request");
+      });
+  });
+});

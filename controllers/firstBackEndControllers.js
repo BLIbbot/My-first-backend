@@ -10,6 +10,7 @@ const {
   removeSelectedComment,
   getAllUsers,
   fetchUser,
+  changeCommentVoteCount,
 } = require("../models/firstBackEndModels");
 //const fs = require("fs/promises");
 const APIList = require("../endpoints.json");
@@ -122,6 +123,18 @@ function getUserByUsername(req, res, next) {
     });
 }
 
+function addCommentVote(req, res, next) {
+  const voteCount = req.body.inc_votes;
+  const { comment_id } = req.params;
+  changeCommentVoteCount(voteCount, comment_id)
+    .then((comment) => {
+      res.status(200).send({ comment });
+    })
+    .catch((err) => {
+      next(err);
+    });
+}
+
 module.exports = {
   getTopics,
   getAPIS,
@@ -133,4 +146,5 @@ module.exports = {
   deleteComment,
   getUsers,
   getUserByUsername,
+  addCommentVote,
 };

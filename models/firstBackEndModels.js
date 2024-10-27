@@ -132,6 +132,17 @@ const fetchUser = (username) => {
     });
 };
 
+const changeCommentVoteCount = (voteCount, comment_id) => {
+  return db
+    .query(
+      `UPDATE comments SET votes=votes+$1 WHERE comment_id=$2 RETURNING *`,
+      [voteCount, comment_id]
+    )
+    .then((updatedVoteCount) => {
+      return updatedVoteCount.rows[0];
+    });
+};
+
 module.exports = {
   getCurrentTopics,
   getSpecificArticle,
@@ -142,4 +153,5 @@ module.exports = {
   removeSelectedComment,
   getAllUsers,
   fetchUser,
+  changeCommentVoteCount,
 };
