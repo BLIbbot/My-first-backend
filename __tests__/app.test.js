@@ -25,7 +25,7 @@ describe("GET/api/topics", () => {
       .expect(200)
       .then(({ body }) => {
         const topics = body.topics;
-        expect(topics.length).toBe(3);
+        expect(topics.length).toBe(4);
         topics.forEach((topic) => {
           expect(typeof topic.slug).toBe("string");
           expect(typeof topic.description).toBe("string");
@@ -482,7 +482,7 @@ describe("GET /api/users", () => {
           avatar_url:
             "https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg",
         });
-        expect(users.length).toBe(4);
+        expect(users.length).toBe(5);
         users.forEach((user) => {
           expect(typeof user.username).toBe("string");
           expect(typeof user.name).toBe("string");
