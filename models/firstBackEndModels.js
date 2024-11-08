@@ -44,7 +44,7 @@ const grabArticles = (
     "title",
     "created_at",
     "author",
-    "comment_count",
+    "comments_count",
     "topic",
   ];
   const validOrder = ["DESC", "ASC"];
