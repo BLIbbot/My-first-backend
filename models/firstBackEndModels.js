@@ -25,8 +25,16 @@ const getSpecificArticle = (article_id) => {
     });
 };
 
-const grabArticles = (sort_by = "created_at", order = "DESC") => {
+const grabArticles = (
+  sort_by = "created_at",
+  order = "DESC",
+  topic,
+  validtopics
+) => {
   order = order.toUpperCase();
+  if (!validtopics.includes(topic) && topic) {
+    return promise.reject({ status: 404, msg: "Invalid topic selection" });
+  }
   const allowedInputs = [
     "title",
     "topic",
@@ -42,16 +50,16 @@ const grabArticles = (sort_by = "created_at", order = "DESC") => {
   if (!allowedInputs.includes(sort_by, order)) {
     return Promise.reject({ status: 400, msg: "Invalid input" });
   }
-  return db
-    .query(
-      `SELECT articles.article_id, title, topic, articles.author, articles.created_at, articles.votes, article_img_url, COUNT(comments.article_id) AS comments_count FROM articles
-       LEFT JOIN comments ON articles.article_id = comments.article_id
-       GROUP BY articles.article_id
-       ORDER BY articles.${sort_by} ${order};`
-    )
-    .then(({ rows }) => {
-      return rows;
-    });
+  let queryStr = `SELECT articles.article_id, title, topic, articles.author, articles.created_at, articles.votes, article_img_url, COUNT(comments.article_id) AS comments_count FROM articles
+       LEFT JOIN comments ON articles.article_id = comments.article_id`;
+  if (topic) {
+    queryStr += ` where articles.topic=${topic}`;
+  }
+  queryStr += ` GROUP BY articles.article_id
+       ORDER BY articles.${sort_by} ${order};`;
+  return db.query(queryStr).then(({ rows }) => {
+    return rows;
+  });
 };
 
 const getComments = (article_id) => {

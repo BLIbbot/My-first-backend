@@ -50,15 +50,19 @@ function getArticle(req, res, next) {
 }
 
 function getAllArticles(req, res, next) {
-  const sort_by = req.query.sort_by;
-  const order = req.query.order;
-  grabArticles(sort_by, order)
-    .then((articles) => {
-      res.status(200).send({ articles });
-    })
-    .catch((err) => {
-      next(err);
+  const { sort_by, order, topic } = req.query;
+  getCurrentTopics().then((topics) => {
+    const validtopics = topics.map((topic) => {
+      return topic.slug;
     });
+    grabArticles(sort_by, order, topic, validtopics)
+      .then((articles) => {
+        res.status(200).send({ articles });
+      })
+      .catch((err) => {
+        next(err);
+      });
+  });
 }
 
 function getArticleComments(req, res, next) {
