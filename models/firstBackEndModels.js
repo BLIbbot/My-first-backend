@@ -58,7 +58,7 @@ const grabArticles = (
 
   const queryArray = [];
   if (topic) {
-    queryStr += ` WHERE articles.topic = $3`;
+    queryStr += ` WHERE articles.topic = $1`;
     queryArray.push(topic);
   }
 
