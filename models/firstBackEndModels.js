@@ -33,7 +33,7 @@ const grabArticles = (
 ) => {
   order = order.toUpperCase();
   if (!validtopics.includes(topic) && topic) {
-    return promise.reject({ status: 404, msg: "Invalid topic selection" });
+    return Promise.reject({ status: 404, msg: "Invalid topic selection" });
   }
   const allowedInputs = [
     "title",
@@ -50,14 +50,16 @@ const grabArticles = (
   if (!allowedInputs.includes(sort_by, order)) {
     return Promise.reject({ status: 400, msg: "Invalid input" });
   }
-  let queryStr = `SELECT articles.article_id, title, topic, articles.author, articles.created_at, articles.votes, article_img_url, COUNT(comments.article_id) AS comments_count FROM articles
+  let queryStr = `SELECT articles.article_id, title, articles.topic, articles.author, articles.created_at, articles.votes, article_img_url, COUNT(comments.article_id) AS comments_count FROM articles
        LEFT JOIN comments ON articles.article_id = comments.article_id`;
+  const queryArr = [];
   if (topic) {
-    queryStr += ` where articles.topic=${topic}`;
+    queryArr.push(topic);
+    queryStr += ` where articles.topic = $1`;
   }
   queryStr += ` GROUP BY articles.article_id
        ORDER BY articles.${sort_by} ${order};`;
-  return db.query(queryStr).then(({ rows }) => {
+  return db.query(queryStr, queryArr).then(({ rows }) => {
     return rows;
   });
 };
