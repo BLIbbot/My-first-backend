@@ -101,7 +101,7 @@ describe("GET /api/articles/:article_id (comment_count)", () => {
 describe("GET /api/articles", () => {
   test("200 - returns a sorted array of objects containing all available articles ", () => {
     return request(app)
-      .get("/api/articles")
+      .get("/api/articles?sort_by=created_at")
       .expect(200)
       .then(({ body }) => {
         const articles = body.articles;
@@ -113,7 +113,7 @@ describe("GET /api/articles", () => {
           expect(typeof article.author).toBe("string");
           expect(typeof article.created_at).toBe("string");
           expect(typeof article.article_img_url).toBe("string");
-          expect(typeof article.comments_count).toBe("string");
+          expect(typeof article.comments_count).toBe("number");
           expect(typeof article.article_id).toBe("number");
           expect(typeof article.votes).toBe("number");
           expect(article.body).toBeUndefined();

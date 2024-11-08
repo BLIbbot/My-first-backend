@@ -29,37 +29,49 @@ const grabArticles = (
   sort_by = "created_at",
   order = "DESC",
   topic,
-  validtopics
+  validTopics
 ) => {
-  order = order.toUpperCase();
-  if (!validtopics.includes(topic) && topic) {
-    return Promise.reject({ status: 404, msg: "Invalid topic selection" });
-  }
-  const allowedInputs = [
-    "title",
-    "topic",
-    "author",
-    "created_at",
-    "article_img_url",
-    "comments_count",
+  let queryStr = `
+    SELECT articles.article_id, articles.author, articles.title, articles.topic, articles.created_at, articles.votes, articles.article_img_url, CAST(COUNT(comments.comment_id) AS INTEGER) AS comments_count
+    FROM articles
+    LEFT JOIN comments
+    ON comments.article_id = articles.article_id
+    `;
+
+  const validSortBy = [
     "article_id",
     "votes",
-    "ASC",
-    "DESC",
+    "title",
+    "created_at",
+    "author",
+    "comment_count",
+    "topic",
   ];
-  if (!allowedInputs.includes(sort_by, order)) {
+  const validOrder = ["DESC", "ASC"];
+
+  if (!validSortBy.includes(sort_by) || !validOrder.includes(order)) {
     return Promise.reject({ status: 400, msg: "Invalid input" });
   }
-  let queryStr = `SELECT articles.article_id, title, articles.topic, articles.author, articles.created_at, articles.votes, article_img_url, COUNT(comments.article_id) AS comments_count FROM articles
-       LEFT JOIN comments ON articles.article_id = comments.article_id`;
-  const queryArr = [];
-  if (topic) {
-    queryArr.push(topic);
-    queryStr += ` where articles.topic = $1`;
+  if (!validTopics.includes(topic) && topic !== undefined) {
+    return Promise.reject({ status: 404, msg: "Topic does not exist" });
   }
-  queryStr += ` GROUP BY articles.article_id
-       ORDER BY articles.${sort_by} ${order};`;
-  return db.query(queryStr, queryArr).then(({ rows }) => {
+
+  const queryArray = [];
+  if (topic) {
+    queryStr += ` WHERE articles.topic = $3`;
+    queryArray.push(topic);
+  }
+
+  queryStr += ` GROUP BY articles.article_id`;
+
+  if (sort_by) {
+    queryStr += ` ORDER BY ${sort_by}`;
+  }
+  if (order) {
+    queryStr += ` ${order}`;
+  }
+
+  return db.query(queryStr, queryArray).then(({ rows }) => {
     return rows;
   });
 };
